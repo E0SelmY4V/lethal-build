@@ -1,12 +1,12 @@
 {
-	"name": "vrock-build",
+	"name": "lethal-build",
 	"version": "0.9.0",
 	"description": "I just want to build, in my way.",
 	"main": "./lib/index.js",
 	"scripts": {},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/E0SelmY4V/vrock-build.git"
+		"url": "git+https://github.com/E0SelmY4V/lethal-build.git"
 	},
 	"keywords": [
 		"build",
@@ -15,11 +15,11 @@
 		"utilities"
 	],
 	"author": "e0selmy4v",
-	"license": "GPL-3.0-or-later",
+	"license": "wtfpl",
 	"bugs": {
-		"url": "https://github.com/E0SelmY4V/vrock-build/issues"
+		"url": "https://github.com/E0SelmY4V/lethal-build/issues"
 	},
-	"homepage": "https://github.com/E0SelmY4V/vrock-build#readme",
+	"homepage": "https://github.com/E0SelmY4V/lethal-build#readme",
 	"devDependencies": {},
 	"dependencies": {
 		"@types/node": ""

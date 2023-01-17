@@ -1,4 +1,4 @@
-# VRock Build
+# Lethal Build
 
 ![logo](lib/logo.png)
 
