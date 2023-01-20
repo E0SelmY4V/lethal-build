@@ -15,7 +15,7 @@ class Opn {
 	}
 	dir = '';
 	t(n: string, d = true) {
-		return d ? n ? (__dirname + '/' + n) : __dirname : n;
+		return d ? n ? (this.dir + '/' + n) : this.dir : n;
 	}
 	mergeOut(list: string[], out: fs.WriteStream) {
 		return scpoProce.snake(list.map(e => (todo: () => void) =>
@@ -29,7 +29,7 @@ class Opn {
 		return scpoProce
 			.snake(k.reverse().map(e => todo => {
 				if (e[0]) {
-					const fname = `${__dirname}/temp${++this.tid}`;
+					const fname = `${this.dir}/temp${++this.tid}`;
 					files.push(fname), temps.push(fname);
 					fs.writeFile(fname, e[1], todo);
 				} else files.push(this.t(e[1], d)), todo();
