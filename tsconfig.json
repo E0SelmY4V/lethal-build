@@ -1,0 +1,23 @@
+{
+	"compilerOptions": {
+		"module": "CommonJS",
+		"moduleResolution": "Node",
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"allowSyntheticDefaultImports": true,
+		"noImplicitAny": true,
+		"strict": true,
+		"alwaysStrict": true,
+		"strictPropertyInitialization": true,
+		"strictBindCallApply": true,
+		"noImplicitThis": true,
+	},
+	"exclude": [
+		"node_modules",
+		"**/node_modules/*",
+		"test/*",
+	],
+	"files": [
+		"./lib/index.ts"
+	],
+}

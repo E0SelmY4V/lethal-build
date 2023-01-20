@@ -22,6 +22,7 @@
 	"homepage": "https://github.com/E0SelmY4V/lethal-build#readme",
 	"devDependencies": {},
 	"dependencies": {
+		"scpo-proce": "^1.10116.0",
 		"@types/node": ""
 	}
 }
