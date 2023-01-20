@@ -4,7 +4,7 @@ import scpoProce = require('scpo-proce');
 
 /**
  * Lethal Build
- * @version 1.0.0
+ * @version 1.0.1
  * @license WTFPL
  * @link https://github.com/E0SelmY4V/lethal-build
  */
