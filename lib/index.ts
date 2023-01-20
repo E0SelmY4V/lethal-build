@@ -46,4 +46,5 @@ class Opn {
 	);
 	judge = (...l: boolean[]) => () => scpoProce.snake(l.map(e => e ? _ => _() : _ => _));
 	snake = (...t: (() => ProceN)[]) => scpoProce.snake(t.map(e => todo => e().then(todo)));
+	log = (...msg: any[]) => () => scpoProce((console.log(...msg), false));
 };
