@@ -27,7 +27,7 @@ class Opn {
 		const files: string[] = [], temps: string[] = [];
 		const outs = typeof out === 'string' ? fs.createWriteStream(this.t(out, d)) : out;
 		return scpoProce
-			.snake(k.reverse().map(e => todo => {
+			.snake(k.map(e => todo => {
 				if (e[0]) {
 					const fname = `${this.dir}/temp${++this.tid}`;
 					files.push(fname), temps.push(fname);
