@@ -5,7 +5,7 @@ import * as child_process from 'child_process'
 
 /**
  * Lethal Build
- * @version 1.0.1
+ * @version 1.1.0
  * @license WTFPL
  * @link https://github.com/E0SelmY4V/lethal-build
  */
