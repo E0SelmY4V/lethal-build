@@ -27,3 +27,34 @@ const LB = LBIniter(import.meta.url);
 import LBIniter = require('lethal-build');
 const LB = LBIniter(__dirname);
 ```
+
+### Demo
+
+```ts
+const LB = require('lethal-build')(__dirname);
+const { snake, exec, outFS, log, dels } = LB;
+
+// Process chain
+snake(
+  // Compile
+  exec('tsc'),
+  // Packing
+  exec('webpack'),
+  // Assemble
+  outFS(
+    [1, '!function(exp){\n\t'],
+    [0, 'out.js'],
+    [1, '\n}(window)'],
+  ], 'main.js'),
+  // Clear
+  dels([
+    'lib/index.js',
+    'lib/class.js',
+    'out.js',
+  ]),
+  // Log
+  log('finish.'),
+);
+
+// Wow, so elegant.
+```
