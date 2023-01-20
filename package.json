@@ -3,6 +3,13 @@
 	"version": "0.9.0",
 	"description": "I just want to build, in my way.",
 	"main": "./lib/index.js",
+	"types": "./lib/index.ts",
+	"exports": {
+		".": {
+			"require": "./lib/index.js",
+			"import": "./lib/esm.js"
+		}
+	},
 	"scripts": {},
 	"repository": {
 		"type": "git",
@@ -20,7 +27,9 @@
 		"url": "https://github.com/E0SelmY4V/lethal-build/issues"
 	},
 	"homepage": "https://github.com/E0SelmY4V/lethal-build#readme",
-	"devDependencies": {},
+	"devDependencies": {
+		"export-tester": "^1.0.0"
+	},
 	"dependencies": {
 		"scpo-proce": "^1.10116.0",
 		"@types/node": ""
