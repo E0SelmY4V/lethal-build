@@ -28,9 +28,9 @@ import LBIniter = require('lethal-build');
 const LB = LBIniter(__dirname);
 ```
 
-### Demo
+## Demo
 
-```ts
+```js
 const LB = require('lethal-build')(__dirname);
 const { snake, exec, outFS, log, dels } = LB;
 
@@ -42,15 +42,15 @@ snake(
   exec('webpack'),
   // Assemble
   outFS(
-    [1, '!function(exp){\n\t'],
-    [0, 'out.js'],
-    [1, '\n}(window)'],
+    [1, '!function(exp){'],
+    [0, 'packed.js'],
+    [1, '}(window)'],
   ], 'main.js'),
   // Clear
   dels([
     'lib/index.js',
     'lib/class.js',
-    'out.js',
+    'packed.js',
   ]),
   // Log
   log('finish.'),
