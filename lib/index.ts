@@ -14,16 +14,13 @@ class Opn {
 		this.dir = dir;
 	}
 	dir = '';
-	t(n: string, d = true) {
-		return d ? n ? (this.dir + '/' + n) : this.dir : n;
-	}
-	mergeOut(list: string[], out: fs.WriteStream) {
-		return scpoProce.snake(list.map(e => (todo: () => void) =>
+	t = (n: string, d = true) => d ? n ? (this.dir + '/' + n) : this.dir : n;
+	mergeOut = (list: string[], out: fs.WriteStream) =>
+		scpoProce.snake(list.map(e => (todo: () => void) =>
 			fs.createReadStream(e).on('end', todo).pipe(out, { end: false })
 		)).then(() => out.end());
-	}
 	tid = -1;
-	outFS(k: [0 | 1 | boolean, string][], out: string | fs.WriteStream, d = true) {
+	outFS = (k: [0 | 1 | boolean, string][], out: string | fs.WriteStream, d = true) => {
 		const files: string[] = [], temps: string[] = [];
 		const outs = typeof out === 'string' ? fs.createWriteStream(this.t(out, d)) : out;
 		return scpoProce
@@ -38,10 +35,8 @@ class Opn {
 			.take(() => this.dels(temps, false))
 			.take(1);
 	}
-	cps(p: [string, string][], d = true): Proce<[]> {
-		return scpoProce.snake(p.map(e => todo => (fs.cp(this.t(e[0], d), this.t(e[1], d), todo))));
-	}
-	dels(p: string[], d = true): Proce<[]> {
-		return scpoProce.snake(p.map(e => todo => fs.unlink(this.t(e, d), todo)));
-	}
+	cps = (p: [string, string][], d = true): Proce<[]> =>
+		scpoProce.snake(p.map(e => todo => (fs.cp(this.t(e[0], d), this.t(e[1], d), todo))));
+	dels = (p: string[], d = true): Proce<[]> =>
+		scpoProce.snake(p.map(e => todo => fs.unlink(this.t(e, d), todo)));
 };
