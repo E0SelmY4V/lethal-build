@@ -41,7 +41,7 @@ snake(
   // Packing
   exec('webpack'),
   // Assemble
-  outFS(
+  outFS([
     [1, '!function(exp){'],
     [0, 'packed.js'],
     [1, '}(window)'],
