@@ -3,13 +3,9 @@ import type { Proce, ProceN } from 'scpo-proce';
 import scpoProce = require('scpo-proce');
 import * as child_process from 'child_process'
 
-/**
- * Lethal Build
- * @version 1.1.0
- * @license WTFPL
- * @link https://github.com/E0SelmY4V/lethal-build
- */
-export = (dir: string) => new Opn(dir);
+const initer = (dir: string) => new Opn(dir);
+initer.default = initer;
+
 class Opn {
 	constructor(dir: string) {
 		this.dir = dir;
@@ -47,4 +43,14 @@ class Opn {
 	judge = (...l: boolean[]) => () => scpoProce.snake(l.map(e => e ? _ => _() : _ => _));
 	snake = (...t: (() => PromiseLike<any>)[]) => scpoProce.snake(t.map(e => todo => e().then(todo)));
 	log = (...msg: any[]) => () => scpoProce((console.log(...msg), false));
+	initer = initer as typeof import('.');
 };
+/**
+ * Lethal Build
+ * @version 1.1.0
+ * @license WTFPL
+ * @link https://github.com/E0SelmY4V/lethal-build
+ */
+export = Object.assign(initer, {
+	Opn,
+});

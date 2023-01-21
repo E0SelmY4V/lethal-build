@@ -18,13 +18,17 @@ const LB = require('lethal-build')(__dirname);
 
 ```js
 import LBIniter from 'lethal-build';
+
 const LB = LBIniter(import.meta.url);
 ```
 
-### TS
+### Typescript
 
 ```ts
+import LBIniter from 'lethal-build';
+// or
 import LBIniter = require('lethal-build');
+
 const LB = LBIniter(__dirname);
 ```
 
