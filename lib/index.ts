@@ -10,9 +10,10 @@ import * as child_process from 'child_process'
  * @link https://github.com/E0SelmY4V/lethal-build
  */
 function initer(dir: string) {
-	return new initer.Opn(dir);
+	return initer.OpnList[dir] || (initer.OpnList[dir] = new initer.Opn(dir));
 }
 namespace initer {
+	export const OpnList: { [dir: string]: Opn } = {};
 	export class Opn {
 		constructor(dir: string) {
 			this.dir = dir;
@@ -50,7 +51,7 @@ namespace initer {
 		judge = (...l: boolean[]) => () => scpoProce.snake(l.map(e => e ? _ => _() : _ => _));
 		snake = (...t: (() => PromiseLike<any>)[]) => scpoProce.snake(t.map(e => todo => e().then(todo)));
 		log = (...msg: any[]) => () => scpoProce((console.log(...msg), false));
-		initer = initer as typeof import('.');
+		initer = initer;
 	};
 }
 initer.default = initer;
