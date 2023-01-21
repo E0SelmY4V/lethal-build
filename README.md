@@ -1,6 +1,6 @@
 # Lethal Build
 
-![logo](lib/logo.png)
+![logo](lib/banner.png)
 
 > I just want to build, in my way.
 
@@ -36,24 +36,30 @@ const { snake, exec, outFS, log, dels } = LB;
 
 // Process chain
 snake(
+
   // Compile
   exec('tsc'),
+
   // Packing
   exec('webpack'),
+
   // Assemble
   outFS([
     [1, '!function(exp){'],
     [0, 'packed.js'],
     [1, '}(window)'],
   ], 'main.js'),
+
   // Clear
   dels([
     'lib/index.js',
     'lib/class.js',
     'packed.js',
   ]),
+
   // Log
   log('finish.'),
+
 );
 
 // Wow, so elegant.
