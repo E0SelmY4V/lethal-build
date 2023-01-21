@@ -1,11 +1,11 @@
 import * as fs from 'fs';
-import type { Proce, ProceN } from 'scpo-proce';
+import type { Proce } from 'scpo-proce';
 import scpoProce = require('scpo-proce');
 import * as child_process from 'child_process'
 
 /**
  * Lethal Build
- * @version 1.1.0
+ * @version 1.1.1
  * @license GPL-3.0-or-later
  * @link https://github.com/E0SelmY4V/lethal-build
  */
