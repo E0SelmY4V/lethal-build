@@ -45,6 +45,6 @@ class Opn {
 		(todo, ordo, err, stdout, stderr) => (console.log(stdout), console.log(stderr), err ? ordo : todo)(err),
 	);
 	judge = (...l: boolean[]) => () => scpoProce.snake(l.map(e => e ? _ => _() : _ => _));
-	snake = (...t: (() => ProceN)[]) => scpoProce.snake(t.map(e => todo => e().then(todo)));
+	snake = (...t: (() => PromiseLike<any>)[]) => scpoProce.snake(t.map(e => todo => e().then(todo)));
 	log = (...msg: any[]) => () => scpoProce((console.log(...msg), false));
 };
