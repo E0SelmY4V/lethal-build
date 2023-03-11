@@ -1,4 +1,6 @@
 import * as fs from 'fs';
+import * as fsp from 'fs/promises';
+import * as path from 'path';
 import 'promise-snake';
 import Yct from 'you-can-too';
 import * as child_process from 'child_process';
@@ -22,6 +24,7 @@ function initer(dir: string) {
 }
 namespace initer {
 	export const OpnList: { [dir: string]: Opn; } = {};
+	export const isRegExp = (n: RegExp | readonly any[]): n is RegExp => 'flags' in n;
 	export class Opn {
 		constructor(dir: string) {
 			this.dir = dir;
@@ -30,8 +33,24 @@ namespace initer {
 		dir: string;
 		comp = (fname: string, noIgn = true) => noIgn ? fname ? (this.dir + '/' + fname) : this.dir : fname;
 		t = this.comp;
-		mergeOut = (files: string[], out: fs.WriteStream) => () =>
-			Promise.snake(files.map(file => res =>
+		walk = async (dir = this.dir, matched: string[] = []) => {
+			const files = await fsp.readdir(dir);
+			await Promise.snake(files.map(filename => async (res) => {
+				const filepath = path.join(dir, filename);
+				(await fsp.stat(filepath)).isDirectory() ? await this.walk(filepath, matched) : matched.push(filepath);
+				return res();
+			}));
+			return matched;
+		};
+		match = async (reg: RegExp | string[], dir = this.dir) => {
+			if (!isRegExp(reg)) return reg;
+			const allFile = await this.walk(dir);
+			const files: string[] = [];
+			allFile.forEach(file => reg.test(file) && files.push(file));
+			return files;
+		};
+		mergeOut = (files: string[] | RegExp, out: fs.WriteStream) => async () =>
+			Promise.snake((await this.match(files)).map(file => res =>
 				fs.createReadStream(file).on('end', res).pipe(out, { end: false })
 			)).then(() => out.end());
 		tempFileId = -1;
@@ -56,8 +75,8 @@ namespace initer {
 		};
 		cps = (opns: [string, string][], noIgn = true) => () =>
 			Promise.snake(opns.map(([from, to]) => (res, rej) => (fs.cp(this.comp(from, noIgn), this.comp(to, noIgn), cbNoArg(res, rej)))));
-		dels = (files: string[], noIgn = true) => () =>
-			Promise.snake(files.map(file => (res, rej) => fs.unlink(this.comp(file, noIgn), cbNoArg(res, rej))));
+		dels = (files: string[] | RegExp, noIgn = !isRegExp(files)) => async () =>
+			Promise.snake((await this.match(files)).map(file => (res, rej) => fs.unlink(this.comp(file, noIgn), cbNoArg(res, rej))));
 		exec = (cmd: string) => () => new Promise<void>((todo, ordo) =>
 			child_process.exec(cmd, cbArgs((out, err) => (console.log(out), console.log(err)), todo, ordo))
 		);
