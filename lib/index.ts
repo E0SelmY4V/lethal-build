@@ -1,6 +1,15 @@
 import * as fs from 'fs';
 import 'promise-snake';
+import Yct from 'you-can-too';
 import * as child_process from 'child_process';
+const {
+	callback: {
+		giveAndDo,
+		giveAndReturn,
+		cbNoArg,
+		cbArgs,
+	},
+} = Yct;
 
 /**
  * Lethal Build
@@ -12,11 +21,6 @@ function initer(dir: string) {
 	return initer.OpnList[dir] || (initer.OpnList[dir] = new initer.Opn(dir));
 }
 namespace initer {
-	const giveAndDo = <T>(n: (...arg: any[]) => T) => n();
-	const giveAndReturn = <T>(n: T) => n;
-	const cbNoArg = <T>(res: () => any, rej: (err: T) => any) => (err: T) => err === null ? res() : rej(err);
-	const cbOneArg = <T, N>(res: (n: N) => any, rej: (err: T) => any) => (err: T, n: N) => err === null ? res(n) : rej(err);
-	const cbArgs = <T, N extends any[]>(hdl: (...arg: N) => any, res: () => any, rej: (err: T) => any) => (err: T, ...arg: N) => err === null ? (hdl(...arg), res()) : rej(err);
 	export const OpnList: { [dir: string]: Opn; } = {};
 	export class Opn {
 		constructor(dir: string) {
