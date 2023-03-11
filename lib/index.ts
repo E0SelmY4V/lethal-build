@@ -57,8 +57,10 @@ namespace initer {
 		exec = (cmd: string) => () => new Promise<void>((todo, ordo) =>
 			child_process.exec(cmd, cbArgs((out, err) => (console.log(out), console.log(err)), todo, ordo))
 		);
-		judge = (...values: boolean[]) => () => Promise.snake(values.map(value => value ? giveAndDo : giveAndReturn));
-		snake = (...opns: (() => PromiseLike<any>)[]) => Promise.snake(opns.map(opn => todo => opn().then(todo)));
+		judge = (...values: ((() => boolean) | boolean)[]) => () =>
+			Promise.snake(values.map(value => (typeof value === 'boolean' ? value : value()) ? giveAndDo : giveAndReturn));
+		snake = (...opns: (() => PromiseLike<any>)[]) =>
+			Promise.snake(opns.map(opn => todo => opn().then(todo)));
 		log = (...msg: any[]) => async () => (console.log(...msg), false);
 		initer = initer;
 	};
