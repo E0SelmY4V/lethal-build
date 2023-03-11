@@ -15,7 +15,7 @@ const {
 
 /**
  * Lethal Build
- * @version 1.1.1
+ * @version 1.2.0
  * @license GPL-3.0-or-later
  * @link https://github.com/E0SelmY4V/lethal-build
  */
