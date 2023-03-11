@@ -33,7 +33,7 @@
 		"export-tester": "^1.0.2"
 	},
 	"dependencies": {
-		"scpo-proce": "^1.10116.0",
+		"promise-snake": "^1.0.0",
 		"@types/node": ""
 	}
 }
