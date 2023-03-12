@@ -34,19 +34,16 @@ namespace initer {
 		dir: string;
 		comp = (fname: string, noIgn = true) => noIgn ? fname ? (this.dir + '/' + fname) : this.dir : fname;
 		t = this.comp;
-		private cmtStr = '';
-		private cmtNum = 0;
-		private cmtNow = 0;
-		private cmtEvent = new events.EventEmitter;
-		setCmt = (cmdFile: Will<string>, { br = '\n', noIgn = true } = {}) => async () => {
+		private cmtMem: { [file: string]: string; } = {};
+		cmt = async (cmtFile: Will<string>, { br = '\n', noIgn = true } = {}) => {
+			const file = this.comp(await cmtFile, noIgn);
+			if (file in this.cmtMem) return this.cmtMem[file];
 			const cmtArr: string[] = [];
-			let cb = (input: string) => input[0] === ' ' || input[0] === '/' ? cmtArr.push(input) : inter.removeAllListeners('line');
-			const inter = readline.createInterface(fs.createReadStream(this.comp(await cmdFile, noIgn))).on('line', cb);
+			let cb = (input: string) => input[0] === ' ' || input[0] === '/' ? cmtArr.push(input) : (inter.removeAllListeners('line'), cmtArr.push(''));
+			const inter = readline.createInterface(fs.createReadStream(file)).on('line', cb);
 			await events.once(inter, 'close');
-			this.cmtStr = cmtArr.join(br) + br;
-			this.cmtEvent.emit(`${this.cmtNum++}`);
+			return this.cmtMem[file] = cmtArr.join(br);
 		};
-		getCmt = () => new Promise(res => this.cmtEvent.once(`${this.cmtNow++}`, res)).then(() => this.cmtStr);
 		walk = async (dir: Will<string> = this.dir, matched: Will<Will<string>[]> = []) => {
 			const files = await fsp.readdir(await dir);
 			await Promise.snake(files.map(filename => async (res) => {
