@@ -1,6 +1,8 @@
 import * as fs from 'fs';
 import * as fsp from 'fs/promises';
 import * as path from 'path';
+import * as events from 'events';
+import * as readline from 'readline';
 import 'promise-snake';
 import Yct from 'you-can-too';
 import * as child_process from 'child_process';
@@ -33,6 +35,15 @@ namespace initer {
 		dir: string;
 		comp = (fname: string, noIgn = true) => noIgn ? fname ? (this.dir + '/' + fname) : this.dir : fname;
 		t = this.comp;
+		private cmtStr = '';
+		setCmt = (cmdFile: string, { br = '\n', noIgn = true } = {}) => async () => {
+			const cmtArr: string[] = [];
+			let cb = (input: string) => input[0] === ' ' || input[0] === '/' ? cmtArr.push(input) : inter.removeAllListeners('line');
+			const inter = readline.createInterface(fs.createReadStream(cmdFile)).on('line', cb);
+			await events.once(inter, 'close');
+			this.cmtStr = cmtArr.join(br) + br;
+		};
+		cmt = () => this.cmtStr;
 		walk = async (dir = this.dir, matched: string[] = []) => {
 			const files = await fsp.readdir(dir);
 			await Promise.snake(files.map(filename => async (res) => {
