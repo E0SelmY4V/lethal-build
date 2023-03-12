@@ -1,6 +1,6 @@
 {
 	"name": "lethal-build",
-	"version": "1.2.5",
+	"version": "1.2.6",
 	"description": "I just want to build, in my way.",
 	"types": "./build/index.d.ts",
 	"main": "./build/index.js",
