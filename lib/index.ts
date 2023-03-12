@@ -8,8 +8,6 @@ import Yct from 'you-can-too';
 import * as child_process from 'child_process';
 const {
 	callback: {
-		giveAndDo,
-		giveAndReturn,
 		cbNoArg,
 		cbArgs,
 	},
@@ -17,7 +15,7 @@ const {
 
 /**
  * Lethal Build
- * @version 1.2.0
+ * @version 1.2.5
  * @license GPL-3.0-or-later
  * @link https://github.com/E0SelmY4V/lethal-build
  */
