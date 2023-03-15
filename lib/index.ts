@@ -46,10 +46,9 @@ namespace initer {
 		};
 		walk = async (dir: Will<string> = this.dir, matched: Will<Will<string>[]> = []) => {
 			const files = await fsp.readdir(await dir);
-			await Promise.snake(files.map(filename => async (res) => {
+			await Promise.thens(files.map(filename => async () => {
 				const filepath = path.join(await dir, filename);
 				(await fsp.stat(filepath)).isDirectory() ? await this.walk(filepath, matched) : (await matched).push(filepath);
-				return res();
 			}));
 			return matched;
 		};
@@ -58,7 +57,7 @@ namespace initer {
 			if (!isRegExp(reg)) return reg;
 			const allFile = await this.walk(dir);
 			const files: string[] = [];
-			await Promise.snake(allFile.map(file => async res => (reg.test(await file) && files.push(await file), res())));
+			await Promise.thens(allFile.map(file => async () => reg.test(await file) && files.push(await file)));
 			return files;
 		};
 		mergeOut = (files: Will<Will<string>[] | RegExp>, out: fs.WriteStream) => async () =>
@@ -71,24 +70,23 @@ namespace initer {
 			const files: string[] = [];
 			const temps: string[] = [];
 			const outs = typeof out === 'string' ? fs.createWriteStream(this.comp(out, noIgn)) : out;
-			await Promise.snake(infos.map(([out, info]) => async (res, rej) => {
+			await Promise.thens(infos.map(([out, info]) => async () => {
 				if (out) {
 					const fname = `${this.dir}/temp${++this.tempFileId}`;
 					files.push(fname);
 					temps.push(fname);
-					fs.writeFile(fname, await info, cbNoArg(res, rej));
+					await fsp.writeFile(fname, await info);
 				} else {
 					files.push(this.comp(await info, noIgn));
-					res();
 				}
 			}));
 			await this.mergeOut(files, outs)();
 			await this.dels(temps, false)();
 		};
 		cps = (opns: Will<[Will<string>, Will<string>][]>, noIgn = true) => async () =>
-			Promise.snake((await opns).map(([from, to]) => async (res, rej) => (fs.cp(this.comp(await from, noIgn), this.comp(await to, noIgn), cbNoArg(res, rej)))));
+			Promise.thens((await opns).map(([from, to]) => async () => await fsp.cp(this.comp(await from, noIgn), this.comp(await to, noIgn))));
 		dels = (files: Will<Will<string>[] | RegExp>, noIgn: boolean | null = null) => async () =>
-			Promise.snake((await this.match(files)).map(file => async (res, rej) => fs.unlink(this.comp(await file, noIgn ?? !isRegExp(await files)), cbNoArg(res, rej))));
+			Promise.thens((await this.match(files)).map(file => async () => await fsp.unlink(this.comp(await file, noIgn ?? !isRegExp(await files)))));
 		exec = (cmd: Will<string>) => () => new Promise<void>(async (todo, ordo) =>
 			child_process.exec(await cmd, cbArgs((out, err) => (console.log(out), console.log(err)), todo, ordo))
 		);
@@ -98,10 +96,10 @@ namespace initer {
 				if (typeof (value) === 'boolean' ? value : value()) res();
 			}));
 		snake = (...opns: Will<() => PromiseLike<any>>[]) =>
-			Promise.snake(opns.map(opn => async todo => (await opn)().then(todo)));
+			Promise.thens(opns.map(opn => async () => await (await opn)()));
 		log = <T>(...msgWill: T[]) => async () => {
 			const msgs: Awaited<T>[] = [];
-			await Promise.snake(msgWill.map(msg => async res => (msgs.push(await msg), res())));
+			await Promise.thens(msgWill.map(msg => async () => msgs.push(await msg)));
 			console.log(...msgs);
 		};
 		initer = initer;
