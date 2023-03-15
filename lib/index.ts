@@ -26,6 +26,7 @@ namespace initer {
 	export type Will<T> = T | PromiseLike<T>;
 	export const OpnList: { [dir: string]: Opn; } = {};
 	export const isRegExp = (n: RegExp | readonly any[]): n is RegExp => 'flags' in n;
+	export const ignoreList = ['node_modules'];
 	export class Opn {
 		constructor(dir: string) {
 			this.dir = dir;
@@ -44,9 +45,17 @@ namespace initer {
 			await events.once(inter, 'close');
 			return this.cmtMem[file] = cmtArr.join(br);
 		};
+		get ignoreList() {
+			return ignoreList;
+		}
+		set ignoreList(n) {
+			ignoreList.length = 0;
+			n.forEach(file => ignoreList.push(file));
+		}
 		walk = async (dir: Will<string> = this.dir, matched: Will<Will<string>[]> = []) => {
 			const files = await fsp.readdir(await dir);
 			await Promise.thens(files.map(filename => async () => {
+				if (ignoreList.includes(filename)) return;
 				const filepath = path.join(await dir, filename);
 				(await fsp.stat(filepath)).isDirectory() ? await this.walk(filepath, matched) : (await matched).push(filepath);
 			}));
