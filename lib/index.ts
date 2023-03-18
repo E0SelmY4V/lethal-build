@@ -35,6 +35,7 @@ namespace initer {
 		: (n, f, t) => n.split(f).join(t);
 	export const reps = (n: string, f: string[], t: string[]): string => f.length ? reps(rep(n, f.pop()!, t.pop()!), f, t) : n;
 	export const regSign: readonly string[] = '+*?[]^()-.${}|,:=!<\\'.split('');
+	export const goodReg = (text: string) =>reps(text, regSign.slice(), regSign.map(n => `\\${n}`));
 	export class Opn {
 		constructor(dir: string) {
 			this.dir = dir;
@@ -43,7 +44,8 @@ namespace initer {
 		dir: string;
 		comp = (fname: string) => isAbs(fname) ? fname : fname ? path.join(this.dir, noSep(fname)) : this.dir;
 		compWill = async (fname: Will<string>) => this.comp(await fname);
-		file2reg = (text: string) => RegExp(`^${reps(this.comp(text), regSign.slice(), regSign.map(n => `\\${n}`))}([\\/\\\\].*$|$)`);
+		file2reg = (fname: string) => RegExp(`^${goodReg(this.comp(fname))}([\\/\\\\].*$|$)`);
+		goodReg = goodReg;
 		private cmtMem: { [file: string]: string; } = {};
 		cmt = async (cmtFile: Will<string>, br = '\n') => {
 			const file = this.comp(await cmtFile);
