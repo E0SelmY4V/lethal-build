@@ -41,7 +41,7 @@ namespace initer {
 			process.chdir(dir);
 		}
 		dir: string;
-		comp = (fname: string) => isAbs(fname) ? fname : fname ? path.join(this.dir, noSep(fname)) : this.dir;
+		comp = (fname: string) => isAbs(fname) ? path.normalize(fname) : fname ? path.join(this.dir, noSep(fname)) : this.dir;
 		compWill = async (fname: Will<string>) => this.comp(await fname);
 		file2reg = (text: string) => RegExp(`^${reps(this.comp(text), regSign.slice(), regSign.map(n => `\\${n}`))}([\\/\\\\].*$|$)`);
 		private cmtMem: { [file: string]: string; } = {};
