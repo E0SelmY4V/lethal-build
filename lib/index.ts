@@ -109,13 +109,22 @@ namespace initer {
 			await this.mergeOut(files, outs)();
 			await this.dels(temps)();
 		};
-		cps = (opns: Will<[Will<string>, Will<string>][]>) => async () =>
-			Promise.thens((await opns).map(([from, to]) => async () => await fsp.cp(this.comp(await from), this.comp(await to), { recursive: true })));
-		dels = (files: Will<Will<string>[] | RegExp>) => async () =>
+		cps = (opns: Will<Will<[Will<string>, Will<string>]>[] | [Will<string>, Will<string>]>) => async () =>
+			Promise.thens((await opns).map(nWill => async () => {
+				const n = await nWill;
+				if (typeof n === 'string') throw await opns;
+				await fsp.cp(this.comp(await n[0]), this.comp(await n[1]), { recursive: true });
+			})).catch(async ([a, b]: Will<string>[]) => fsp.cp(this.comp(await a), this.comp(await b), { recursive: true }));
+		dels = (files: Will<Will<string | RegExp>[] | RegExp | string>) => async () =>
 			Promise.thens((await this.match(files)).map(file => async () => await fsp.unlink(this.comp(file))));
-		mvs = (opns: Will<[Will<string>, Will<string>][]>, noIgn = true) => async () => {
-			await this.cps(opns)();
-			await this.dels((await opns).map(([tar]) => tar))();
+		mvs = (opnsWill: Will<Will<[Will<string>, Will<string>]>[] | [Will<string>, Will<string>]>) => async () => {
+			await this.cps(opnsWill)();
+			const mayStr = await (await opnsWill)[0];
+			if (typeof mayStr === 'string') return this.dels(mayStr)();
+			const opns = await opnsWill as Will<[Will<string>, Will<string>]>[];
+			const dos: string[] = [];
+			await Promise.thens(opns.map(opn => async () => dos.push(await (await opn)[0])));
+			await this.dels(dos)();
 		};
 		mkdir = (dir: Will<string> | Will<Will<string>[]>) => async () => {
 			const adir = await dir;
