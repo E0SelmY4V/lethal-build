@@ -93,9 +93,13 @@ namespace initer {
 			await this.dels(temps, false)();
 		};
 		cps = (opns: Will<[Will<string>, Will<string>][]>, noIgn = true) => async () =>
-			Promise.thens((await opns).map(([from, to]) => async () => await fsp.cp(this.comp(await from, noIgn), this.comp(await to, noIgn))));
+			Promise.thens((await opns).map(([from, to]) => async () => await fsp.cp(this.comp(await from, noIgn), this.comp(await to, noIgn), { recursive: true })));
 		dels = (files: Will<Will<string>[] | RegExp>, noIgn: boolean | null = null) => async () =>
 			Promise.thens((await this.match(files)).map(file => async () => await fsp.unlink(this.comp(await file, noIgn ?? !isRegExp(await files)))));
+		mvs = (opns: Will<[Will<string>, Will<string>][]>, noIgn = true) => async () => {
+			await this.cps(opns, noIgn)();
+			await this.dels((await opns).map(([tar]) => tar), noIgn)();
+		};
 		exec = (cmd: Will<string>) => () => new Promise<void>(async (todo, ordo) =>
 			child_process.exec(await cmd, cbArgs((out, err) => (console.log(out), console.log(err)), todo, ordo))
 		);
