@@ -32,6 +32,12 @@
 	"devDependencies": {
 		"export-tester": "^1.0.2"
 	},
+	"files": [
+		"build",
+		"LICENSE",
+		"lib/banner.png",
+		"README.md"
+	],
 	"dependencies": {
 		"promise-snake": "^1.2.0",
 		"esm-entry": "^1.0.0",
