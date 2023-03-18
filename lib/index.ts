@@ -27,17 +27,18 @@ namespace initer {
 	export const OpnList: { [dir: string]: Opn; } = {};
 	export const isRegExp = (n: RegExp | readonly any[]): n is RegExp => 'flags' in n;
 	export const ignoreList = ['node_modules'];
+	export const isAbs: (fname: string) => boolean = path.sep === '/' ? (fname) => fname[0] === '/' : (fname) => fname[1] === ':';
+	export const comp = (fname: string, dir: string) => isAbs(fname) ? fname : fname ? `${dir}/${fname}` : dir;
 	export class Opn {
 		constructor(dir: string) {
 			this.dir = dir;
 			process.chdir(dir);
 		}
 		dir: string;
-		comp = (fname: string, noIgn = true) => noIgn ? fname ? (this.dir + '/' + fname) : this.dir : fname;
-		t = this.comp;
+		comp = (fname: Will<string>) => typeof fname === 'string' ? comp(fname, this.dir) : fname.then(n => comp(n, this.dir));
 		private cmtMem: { [file: string]: string; } = {};
-		cmt = async (cmtFile: Will<string>, { br = '\n', noIgn = true } = {}) => {
-			const file = this.comp(await cmtFile, noIgn);
+		cmt = async (cmtFile: Will<string>, br = '\n') => {
+			const file = await this.comp(cmtFile);
 			if (file in this.cmtMem) return this.cmtMem[file];
 			const cmtArr: string[] = [];
 			let cb = (input: string) => input[0] === ' ' || input[0] === '/' ? cmtArr.push(input) : (inter.removeAllListeners('line'), cmtArr.push(''));
@@ -74,11 +75,11 @@ namespace initer {
 				fs.createReadStream(await file).on('end', res).pipe(out, { end: false })
 			)).then(() => out.end());
 		tempFileId = -1;
-		outFS = (infosWill: Will<[0 | 1 | boolean, Will<string>][]>, outWill: Will<string | fs.WriteStream>, noIgn = true) => async () => {
+		outFS = (infosWill: Will<[0 | 1 | boolean, Will<string>][]>, outWill: Will<string | fs.WriteStream>) => async () => {
 			const [infos, out] = [await infosWill, await outWill];
 			const files: string[] = [];
 			const temps: string[] = [];
-			const outs = typeof out === 'string' ? fs.createWriteStream(this.comp(out, noIgn)) : out;
+			const outs = typeof out === 'string' ? fs.createWriteStream(await this.comp(out)) : out;
 			await Promise.thens(infos.map(([out, info]) => async () => {
 				if (out) {
 					const fname = `${this.dir}/temp${++this.tempFileId}`;
@@ -86,19 +87,19 @@ namespace initer {
 					temps.push(fname);
 					await fsp.writeFile(fname, await info);
 				} else {
-					files.push(this.comp(await info, noIgn));
+					files.push(await this.comp(info));
 				}
 			}));
 			await this.mergeOut(files, outs)();
-			await this.dels(temps, false)();
+			await this.dels(temps)();
 		};
-		cps = (opns: Will<[Will<string>, Will<string>][]>, noIgn = true) => async () =>
-			Promise.thens((await opns).map(([from, to]) => async () => await fsp.cp(this.comp(await from, noIgn), this.comp(await to, noIgn), { recursive: true })));
-		dels = (files: Will<Will<string>[] | RegExp>, noIgn: boolean | null = null) => async () =>
-			Promise.thens((await this.match(files)).map(file => async () => await fsp.unlink(this.comp(await file, noIgn ?? !isRegExp(await files)))));
+		cps = (opns: Will<[Will<string>, Will<string>][]>) => async () =>
+			Promise.thens((await opns).map(([from, to]) => async () => await fsp.cp(await this.comp(from), await this.comp(to), { recursive: true })));
+		dels = (files: Will<Will<string>[] | RegExp>) => async () =>
+			Promise.thens((await this.match(files)).map(file => async () => await fsp.unlink(await this.comp(file))));
 		mvs = (opns: Will<[Will<string>, Will<string>][]>, noIgn = true) => async () => {
-			await this.cps(opns, noIgn)();
-			await this.dels((await opns).map(([tar]) => tar), noIgn)();
+			await this.cps(opns)();
+			await this.dels((await opns).map(([tar]) => tar))();
 		};
 		mkdir = (dir: Will<string> | Will<Will<string>[]>) => async () => {
 			const adir = await dir;
