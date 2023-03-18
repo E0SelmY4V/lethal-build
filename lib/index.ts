@@ -100,6 +100,11 @@ namespace initer {
 			await this.cps(opns, noIgn)();
 			await this.dels((await opns).map(([tar]) => tar), noIgn)();
 		};
+		mkdir = (dir: Will<string> | Will<Will<string>[]>) => async () => {
+			const adir = await dir;
+			const dirs = typeof adir === 'string' ? [adir] : adir;
+			await Promise.thens(dirs.map(n => async () => fsp.mkdir(await n, { recursive: true })));
+		};
 		exec = (cmd: Will<string>) => () => new Promise<void>(async (todo, ordo) =>
 			child_process.exec(await cmd, cbArgs((out, err) => (console.log(out), console.log(err)), todo, ordo))
 		);
