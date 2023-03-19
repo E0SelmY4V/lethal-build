@@ -59,7 +59,38 @@ const LB = require('..')(__dirname);
 
 // LB.dels('newfolder')();
 
-LB.mvs([['newfolder/', 'folder/']])();
+// LB.mvs([['newfolder/', 'folder/']])();
+
+// LB.snake(
+// 	LB.timeStart('1'),
+// 	() => new Promise(res => setTimeout(res, 500)),
+// 	LB.timeEnd('1'),
+// 	LB.log(LB.time('1')),
+// 	LB.timeStart('2'),
+// 	() => new Promise(res => setTimeout(res, 300)),
+// 	LB.timeEnd('2'),
+// 	LB.log(LB.time('2')),
+// 	() => new Promise(res => setTimeout(res, 200)),
+// 	LB.timeEnd('fromInit'),
+// 	LB.log(LB.time('fromInit')),
+// );
+
+LB.snake(
+	LB.timeStart(),
+	LB.timeStart(),
+	() => new Promise(res => setTimeout(res, 500)),
+	LB.timeEnd(),
+	LB.log(LB.time()),
+	LB.timeStart(),
+	() => new Promise(res => setTimeout(res, 300)),
+	LB.timeEnd(),
+	LB.log(LB.time()),
+	() => new Promise(res => setTimeout(res, 200)),
+	LB.timeEnd(),
+	LB.log(LB.time()),
+	LB.timeEnd(),
+	LB.log(LB.time()),
+);
 
 // console.log(LB.initer(__dirname) === LB);
 

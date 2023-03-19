@@ -35,9 +35,10 @@ namespace initer {
 		: (n, f, t) => n.split(f).join(t);
 	export const reps = (n: string, f: string[], t: string[]): string => f.length ? reps(rep(n, f.pop()!, t.pop()!), f, t) : n;
 	export const regSign: readonly string[] = '+*?[]^()-.${}|,:=!<\\'.split('');
-	export const goodReg = (text: string) =>reps(text, regSign.slice(), regSign.map(n => `\\${n}`));
+	export const goodReg = (text: string) => reps(text, regSign.slice(), regSign.map(n => `\\${n}`));
 	export class Opn {
 		constructor(dir: string) {
+			this.timeStart('fromInit')();
 			this.dir = dir;
 			process.chdir(dir);
 		}
@@ -148,6 +149,30 @@ namespace initer {
 			await Promise.thens(msgWill.map(msg => async () => msgs.push(await msg)));
 			console.log(...msgs);
 		};
+		private tempTimeId = 0;
+		private tempList = ['fromInit'];
+		private tempLast = 'fromInit';
+		private timeStarts: { [name: string]: number; } = {};
+		private timeCallbacks: { [name: string]: (time: number) => void; } = {};
+		private timePromises: { [name: string]: Promise<number>; } = {};
+		getHrtime = (timeArr = process.hrtime()) => timeArr[0] * 1000 + timeArr[1] / 1000000;
+		timeStart = (name: string | null = null, timeArr = void 0) => {
+			if (typeof name !== 'string') this.tempList.push(name = `${this.tempTimeId++}`);
+			const n = name;
+			return () => (
+				this.timeStarts[n] = this.getHrtime(timeArr),
+				Promise.resolve()
+			);
+		};
+		timeEnd = (name: string | null = null) => {
+			if (typeof name !== 'string') this.tempLast = name = this.tempList.pop() || 'fromInit';
+			const n = name;
+			return () => (
+				this.timeCallbacks[n](this.getHrtime() - this.timeStarts[n]),
+				Promise.resolve()
+			);
+		};
+		time = (name = this.tempLast) => this.timePromises[name] = new Promise(res => this.timeCallbacks[name] = res);
 		initer = initer;
 	};
 }
