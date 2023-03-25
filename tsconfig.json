@@ -13,7 +13,7 @@
 		"noImplicitThis": true,
 		"declaration": true,
 		"outDir": "./build",
-		"target": "ES5"
+		"target": "ESNext",
 	},
 	"exclude": [
 		"node_modules",
