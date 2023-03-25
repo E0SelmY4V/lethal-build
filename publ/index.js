@@ -40,4 +40,5 @@ snake(
 	mvs(['temp', 'build']),
 	timeEnd(),
 	log('Built in', time(), 'ms'),
+	async () => process.exit(0),
 );

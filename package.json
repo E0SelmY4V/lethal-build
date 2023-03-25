@@ -31,6 +31,7 @@
 		"esm-entry": "^1.0.4",
 		"export-tester": "^1.0.2",
 		"lethal-build": "",
+		"typescript": "",
 		"webpack": "^5.76.3",
 		"webpack-cli": "^5.0.1"
 	},
