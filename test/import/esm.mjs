@@ -1,9 +1,6 @@
 import tester from 'export-tester';
-import LBIniter from 'lethal-build';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-console.log(LBIniter)
-const LB = LBIniter(import.meta.url);
 
 tester(
 	{
