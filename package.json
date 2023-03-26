@@ -1,6 +1,6 @@
 {
 	"name": "lethal-build",
-	"version": "1.3.2",
+	"version": "1.3.3",
 	"description": "I just want to build, in my way.",
 	"main": "./build/exp-cjs.js",
 	"module": "./build/exp-esm.js",
