@@ -24,4 +24,4 @@ tester(
 			console.log(LB(import.meta.url).dir);
 		},
 	}
-);
+).then(({ err }) => process.exit(err));

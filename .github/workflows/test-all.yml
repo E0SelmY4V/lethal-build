@@ -1,4 +1,4 @@
-name: Importing test
+name: Test all
 
 on:
   push:
@@ -7,12 +7,12 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [16.x, 18.x]
 
     steps:
     - uses: actions/checkout@v3
@@ -22,7 +22,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Build
+    - name: Install packages
       run: |
         npm install
+
+    - name: Importing
+      run: |
         npm run test-import

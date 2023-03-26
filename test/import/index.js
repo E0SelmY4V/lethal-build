@@ -1,8 +1,11 @@
 const { fork } = require('child_process');
 require('promise-snake');
 
-Promise.snake([
-	res => fork(__dirname + '/cjs.js').on('close', res),
-	res => fork(__dirname + '/esm.mjs').on('close', res),
-	res => fork(__dirname + '/ts.js').on('close', res),
-]).then(() => process.exit(0));
+Promise.snake(
+	['cjs.js', 'esm.mjs', 'ts.js'].map(f =>
+		(res, rej) => fork(`${__dirname}/${f}`).on('close', n => (n ? rej : res)(f)),
+	)
+).then(
+	() => process.exit(0),
+	(f) => process.exit(-1),
+);

@@ -19,4 +19,4 @@ tester(
 			console.log(LB(__dirname));
 		},
 	}
-);
+).then(({ err }) => process.exit(err));

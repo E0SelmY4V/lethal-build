@@ -22,4 +22,4 @@ tester(
 			console.log(LB(__dirname).dir);
 		},
 	}
-);
+).then(({ err }) => process.exit(err));

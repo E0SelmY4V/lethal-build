@@ -30,7 +30,7 @@
 		"@babel/preset-env": "^7.20.2",
 		"deepmerge": "^4.3.1",
 		"esm-entry": "^1.0.4",
-		"export-tester": "^1.0.2",
+		"export-tester": "^1.0.7",
 		"lethal-build": "",
 		"typescript": "",
 		"webpack": "^5.76.3",
