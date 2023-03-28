@@ -4,12 +4,7 @@
 	"description": "I just want to build, in my way.",
 	"types": "./build/index.d.ts",
 	"main": "./build/index.js",
-	"exports": {
-		".": {
-			"require": "./build/index.js",
-			"import": "./build/esm.js"
-		}
-	},
+	"module": "./build/esm.js",
 	"scripts": {
 		"build": "tsc"
 	},
@@ -30,7 +25,8 @@
 	},
 	"homepage": "https://github.com/E0SelmY4V/lethal-build#readme",
 	"devDependencies": {
-		"export-tester": "^1.0.2"
+		"deepmerge": "^4.3.1",
+		"export-tester": "^1.0.7"
 	},
 	"files": [
 		"build",
